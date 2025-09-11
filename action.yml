@@ -1,22 +1,22 @@
-name: "ablaszkiewicz/posthog-upload-sourcemaps"
+name: "PostHog/upload-source-maps"
 
 description: "Inject and upload sourcemaps with posthog-cli"
 
-author: "ablaszkiewicz"
+author: "PostHog"
 
 branding:
-  icon: upload-cloud
-  color: purple
+  icon: upload
+  color: white
 
 inputs:
   directory:
-    description: "Directory containing built assets (e.g., dist)"
+    description: "Directory with built assets (e.g., `dist`)"
     required: true
   cli-token:
-    description: "PostHog CLI token"
+    description: "PostHog CLI token. See https://app.posthog.com/settings/user-api-keys#variables"
     required: true
   env-id:
-    description: "PostHog environment ID"
+    description: "PostHog environment ID. See https://app.posthog.com/settings/environment#variables"
     required: true
   project:
     description: "Project identifier. Defaults to input from this flag. If not provided, it tries to read git repository name. If neither available, it throws an error"
