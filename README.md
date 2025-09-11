@@ -1,4 +1,4 @@
-# PostHog upload-source-maps actions
+# PostHog source maps github action
 
 Inject and upload JavaScript source maps to PostHog using the PostHog CLI.
 
