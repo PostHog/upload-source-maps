@@ -10,7 +10,7 @@ branding:
 
 inputs:
   directory:
-    description: "Directory with built assets (e.g., `dist`)"
+    description: "Directory containing built assets (e.g., `dist`)"
     required: true
   cli-token:
     description: "PostHog CLI token. See https://app.posthog.com/settings/user-api-keys#variables"
@@ -19,13 +19,13 @@ inputs:
     description: "PostHog environment ID. See https://app.posthog.com/settings/environment#variables"
     required: true
   project:
-    description: "Project identifier. Defaults to input from this flag. If not provided, it tries to read git repository name. If neither available, it throws an error"
+    description: "Project identifier. If not provided, the action tries to read the Git repository name. If it cannot determine a value, the action fails"
     required: false
   version:
-    description: "Release/version (e.g., commit SHA). Defaults to input from this flag. If not provided, it tries to read current commit SHA. If neither available, it throws an error"
+    description: "Release/version (e.g., commit SHA). If not provided, the action uses the current commit SHA. If it cannot determine a value, the action fails"
     required: false
   host:
-    description: "PostHog host URL. If you're on the US PostHog host, you don't need to provide this. If you're on the EU host, provide `https://eu.posthog.com`"
+    description: "PostHog host URL. If you use the US cloud, you don't need to set this. For the EU cloud, set `https://eu.posthog.com`"
     required: false
 
 runs:
