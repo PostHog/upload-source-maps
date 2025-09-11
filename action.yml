@@ -1,0 +1,56 @@
+name: "ablaszkiewicz/posthog-upload-sourcemaps"
+
+description: "Inject and upload sourcemaps with posthog-cli"
+
+author: "ablaszkiewicz"
+
+branding:
+  icon: upload-cloud
+  color: purple
+
+inputs:
+  directory:
+    description: "Directory containing built assets (e.g., dist)"
+    required: true
+  cli-token:
+    description: "PostHog CLI token"
+    required: true
+  env-id:
+    description: "PostHog environment ID"
+    required: true
+  project:
+    description: "Optional project identifier. Defaults: derived from Git repository; if not accessible, the value from this input is used; if neither available, empty"
+    required: false
+  version:
+    description: "Optional release/version (e.g., commit SHA). Defaults: derived from Git commit; if not accessible, the value from this input is used; if neither available, empty"
+    required: false
+  host:
+    description: "Optional PostHog host URL. If you're on the US host, you don't need to provide this. If you're on the EU host, set to https://eu.posthog.com"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install posthog CLI
+      shell: bash
+      run: npm i -g @posthog/cli@0.4.6
+
+    - name: Upload sourcemaps
+      shell: bash
+      env:
+        POSTHOG_CLI_ENV_ID: ${{ inputs.env-id }}
+        POSTHOG_CLI_TOKEN: ${{ inputs.cli-token }}
+      run: |
+        set -euo pipefail
+        global_args=()
+        if [ -n "${{ inputs.host }}" ]; then
+          global_args+=(--host "${{ inputs.host }}")
+        fi
+        args=(--directory "${{ inputs.directory }}")
+        if [ -n "${{ inputs.project }}" ]; then
+          args+=(--project "${{ inputs.project }}")
+        fi
+        if [ -n "${{ inputs.version }}" ]; then
+          args+=(--version "${{ inputs.version }}")
+        fi
+        posthog-cli "${global_args[@]}" sourcemap process "${args[@]}"
