@@ -19,13 +19,13 @@ inputs:
     description: "PostHog environment ID"
     required: true
   project:
-    description: "Optional project identifier. Defaults: derived from Git repository; if not accessible, the value from this input is used; if neither available, empty"
+    description: "Project identifier. Defaults to input from this flag. If not provided, it tries to read git repository name. If neither available, it throws an error"
     required: false
   version:
-    description: "Optional release/version (e.g., commit SHA). Defaults: derived from Git commit; if not accessible, the value from this input is used; if neither available, empty"
+    description: "Release/version (e.g., commit SHA). Defaults to input from this flag. If not provided, it tries to read current commit SHA. If neither available, it throws an error"
     required: false
   host:
-    description: "Optional PostHog host URL. If you're on the US host, you don't need to provide this. If you're on the EU host, set to https://eu.posthog.com"
+    description: "PostHog host URL. If you're on the US PostHog host, you don't need to provide this. If you're on the EU host, provide `https://eu.posthog.com`"
     required: false
 
 runs:
