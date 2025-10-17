@@ -27,6 +27,20 @@ inputs:
   host:
     description: "PostHog host URL. If you use the US cloud, you don't need to set this. For the EU cloud, set `https://eu.posthog.com`"
     required: false
+  delete-after-upload:
+    description: "Whether to delete the source map files after uploading them"
+    required: false
+    default: "false"
+  skip-ssl-verification:
+    description: "Whether to skip SSL verification when uploading chunks - only use when using self-signed certificates for self-deployed instances"
+    required: false
+    default: "false"
+  batch-size:
+    description: "The maximum number of chunks to upload in a single batch (default: 50)"
+    required: false
+  ignore:
+    description: "One or more directory glob patterns to ignore (comma-separated)"
+    required: false
 
 runs:
   using: "composite"
@@ -52,5 +66,20 @@ runs:
         fi
         if [ -n "${{ inputs.version }}" ]; then
           args+=(--version "${{ inputs.version }}")
+        fi
+        if [ "${{ inputs.delete-after-upload }}" = "true" ]; then
+          args+=(--delete-after)
+        fi
+        if [ "${{ inputs.skip-ssl-verification }}" = "true" ]; then
+          args+=(--skip-ssl-verification)
+        fi
+        if [ -n "${{ inputs.batch-size }}" ]; then
+          args+=(--batch-size "${{ inputs.batch-size }}")
+        fi
+        if [ -n "${{ inputs.ignore }}" ]; then
+          IFS=',' read -ra IGNORE_PATTERNS <<< "${{ inputs.ignore }}"
+          for pattern in "${IGNORE_PATTERNS[@]}"; do
+            args+=(--ignore "${pattern// /}")
+          done
         fi
         posthog-cli "${global_args[@]}" sourcemap process "${args[@]}"
