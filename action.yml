@@ -47,7 +47,7 @@ runs:
   steps:
     - name: Install posthog CLI
       shell: bash
-      run: npm i -g @posthog/cli@0.4.6
+      run: npm i -g @posthog/cli@0.5.5
 
     - name: Upload sourcemaps
       shell: bash
