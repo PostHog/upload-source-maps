@@ -48,7 +48,7 @@ jobs:
 
       # Inject and upload source maps using this action
       - name: Inject & upload source maps to PostHog
-        uses: PostHog/upload-source-maps@v0.5.0
+        uses: PostHog/upload-source-maps@v0.4.6.1
         with:
           directory: dist
           env-id: ${{ secrets.POSTHOG_ENV_ID }}
