@@ -44,7 +44,7 @@ jobs:
         run: |
           set -euo pipefail
           CLI_VERSION=$(grep -E 'npm i -g @posthog/cli@' action.yml | sed -E 's/.*@posthog\/cli@([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-          README_VERSION_FULL=$(grep -Eo 'uses: .*posthog/upload-source-maps@v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' -m1 README.md | sed -E 's/.*@v([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+).*/\1/' || true)
+          README_VERSION_FULL=$(grep -Eo 'uses: .*PostHog/upload-source-maps@v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' -m1 README.md | sed -E 's/.*@v([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+).*/\1/' || true)
           if [ -n "${README_VERSION_FULL:-}" ]; then
             README_BASE=$(echo "$README_VERSION_FULL" | cut -d. -f1-3)
             README_BUILD=$(echo "$README_VERSION_FULL" | awk -F. '{print $4}')
@@ -66,8 +66,8 @@ jobs:
         run: |
           set -euo pipefail
           NEW_VERSION="${{ steps.compute.outputs.new_version }}"
-          if grep -qE 'posthog/upload-source-maps@v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' README.md; then
-            sed -Ei "s|posthog/upload-source-maps@v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|posthog/upload-source-maps@${NEW_VERSION}|g" README.md
+          if grep -qE 'PostHog/upload-source-maps@v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' README.md; then
+            sed -Ei "s|PostHog/upload-source-maps@v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|PostHog/upload-source-maps@${NEW_VERSION}|g" README.md
           else
             echo "No existing version string found in README.md" >&2
           fi
