@@ -5,9 +5,6 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write
-
 concurrency:
   group: release-main
   cancel-in-progress: true
@@ -34,6 +31,8 @@ jobs:
     needs: read_commit_message
     if: ${{ needs.read_commit_message.outputs.skip_release != 'true' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -74,7 +73,7 @@ jobs:
 
       - name: Commit README change
         id: commit_readme
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@28e16e81777b558cc906c8750092100bbb34c5e3 # v7.0.0
         with:
           commit_message: "chore: release to marketplace and update README.md"
           branch: main
@@ -93,7 +92,7 @@ jobs:
           git push origin "refs/tags/$NEW_VERSION"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: ${{ steps.compute.outputs.new_version }}
           make_latest: true
