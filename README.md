@@ -23,6 +23,7 @@ See the PostHog documentation for end-to-end guidance: [Upload source maps](http
 | `skip-ssl-verification` | No           | Whether to skip SSL verification when uploading chunks - only use when using self-signed certificates for self-deployed instances (default: `false`) |
 | `batch-size`            | No           | The maximum number of chunks to upload in a single batch (default: 50)                                                                               |
 | `ignore`                | No           | One or more directory glob patterns to ignore (comma-separated, e.g., `node_modules,*.test.js`)                                                      |
+| `cli-version`           | No           | PostHog CLI version to use (e.g., `0.5.7`). If not provided, the latest version is used                                                              |
 
 ## Example usage
 
@@ -74,4 +75,7 @@ jobs:
 
           # Ignore specific patterns
           # ignore: node_modules,*.test.js,coverage
+
+          # Pin to a specific CLI version
+          # cli-version: 0.5.7
 ```
