@@ -41,13 +41,17 @@ inputs:
   ignore:
     description: "One or more directory glob patterns to ignore (comma-separated)"
     required: false
+  cli-version:
+    description: "PostHog CLI version to use (e.g., '0.5.7'). If not provided, the latest version is used"
+    required: false
+    default: "latest"
 
 runs:
   using: "composite"
   steps:
     - name: Install posthog CLI
       shell: bash
-      run: npm i -g @posthog/cli@0.5.7
+      run: npm i -g @posthog/cli@${{ inputs.cli-version }}
 
     - name: Upload sourcemaps
       shell: bash
