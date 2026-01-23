@@ -23,6 +23,7 @@ See the PostHog documentation for end-to-end guidance: [Upload source maps](http
 | `skip-ssl-verification` | No           | Whether to skip SSL verification when uploading chunks - only use when using self-signed certificates for self-deployed instances (default: `false`) |
 | `batch-size`            | No           | The maximum number of chunks to upload in a single batch (default: 50)                                                                               |
 | `ignore`                | No           | One or more directory glob patterns to ignore (comma-separated, e.g., `node_modules,*.test.js`)                                                      |
+| `cli-version`           | No           | PostHog CLI version to use (e.g., `0.5.7`). If not provided, the latest version is used                                                              |
 
 ## Example usage
 
@@ -48,7 +49,7 @@ jobs:
 
       # Inject and upload source maps using this action
       - name: Inject & upload source maps to PostHog
-        uses: PostHog/upload-source-maps@v0.5.7.0
+        uses: PostHog/upload-source-maps@v1
         with:
           directory: dist
           env-id: ${{ secrets.POSTHOG_ENV_ID }}
@@ -74,4 +75,7 @@ jobs:
 
           # Ignore specific patterns
           # ignore: node_modules,*.test.js,coverage
+
+          # Pin to a specific CLI version
+          # cli-version: 0.5.7
 ```
