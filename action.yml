@@ -12,17 +12,17 @@ inputs:
   directory:
     description: "Directory containing built assets (e.g., `dist`)"
     required: true
-  cli-token:
-    description: "PostHog CLI token. See https://app.posthog.com/settings/user-api-keys#variables"
+  api-key:
+    description: "PostHog personal API key with error tracking write scope. See https://app.posthog.com/settings/user-api-keys#variables"
     required: true
-  env-id:
-    description: "PostHog environment ID. See https://app.posthog.com/settings/environment#variables"
+  project-id:
+    description: "PostHog project ID. See https://app.posthog.com/settings/project#variables"
     required: true
-  project:
-    description: "Project identifier. If not provided, the action tries to read the Git repository name. If it cannot determine a value, the action fails"
+  release-name:
+    description: "Release name. If not provided, the action tries to read the Git repository name. If it cannot determine a value, the action fails"
     required: false
-  version:
-    description: "Release/version (e.g., commit SHA). If not provided, the action uses the current commit SHA. If it cannot determine a value, the action fails"
+  release-version:
+    description: "Release version (e.g., commit SHA). If not provided, the action uses the current commit SHA. If it cannot determine a value, the action fails"
     required: false
   host:
     description: "PostHog host URL. If you use the US cloud, you don't need to set this. For the EU cloud, set `https://eu.posthog.com`"
@@ -56,8 +56,8 @@ runs:
     - name: Upload sourcemaps
       shell: bash
       env:
-        POSTHOG_CLI_ENV_ID: ${{ inputs.env-id }}
-        POSTHOG_CLI_TOKEN: ${{ inputs.cli-token }}
+        POSTHOG_CLI_PROJECT_ID: ${{ inputs.project-id }}
+        POSTHOG_CLI_API_KEY: ${{ inputs.api-key }}
       run: |
         set -euo pipefail
         global_args=()
@@ -65,11 +65,11 @@ runs:
           global_args+=(--host "${{ inputs.host }}")
         fi
         args=(--directory "${{ inputs.directory }}")
-        if [ -n "${{ inputs.project }}" ]; then
-          args+=(--project "${{ inputs.project }}")
+        if [ -n "${{ inputs.release-name }}" ]; then
+          args+=(--release-name "${{ inputs.release-name }}")
         fi
-        if [ -n "${{ inputs.version }}" ]; then
-          args+=(--version "${{ inputs.version }}")
+        if [ -n "${{ inputs.release-version }}" ]; then
+          args+=(--release-version "${{ inputs.release-version }}")
         fi
         if [ "${{ inputs.delete-after-upload }}" = "true" ]; then
           args+=(--delete-after)

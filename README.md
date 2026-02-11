@@ -14,16 +14,16 @@ See the PostHog documentation for end-to-end guidance: [Upload source maps](http
 | **Name**                | **Required** | **Description**                                                                                                                                      |
 | ----------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `directory`             | Yes          | Directory containing built assets (e.g., `dist`)                                                                                                     |
-| `env-id`                | Yes          | PostHog environment ID. See [environment settings](https://app.posthog.com/settings/environment#variables)                                           |
-| `cli-token`             | Yes          | PostHog CLI token with error tracking write scope. See [API key settings](https://app.posthog.com/settings/user-api-keys#variables)                  |
-| `project`               | No           | Project identifier. If not provided, the action tries to read the Git repository name. If it cannot determine a value, the action fails              |
-| `version`               | No           | Release/version (e.g., commit SHA). If not provided, the action uses the current commit SHA. If it cannot determine a value, the action fails        |
+| `project-id`            | Yes          | PostHog project ID. See [project settings](https://app.posthog.com/settings/project#variables)                                                       |
+| `api-key`               | Yes          | PostHog personal API key with error tracking write scope. See [API key settings](https://app.posthog.com/settings/user-api-keys#variables)           |
+| `release-name`          | No           | Release name. If not provided, the action tries to read the Git repository name. If it cannot determine a value, the action fails                    |
+| `release-version`       | No           | Release version (e.g., commit SHA). If not provided, the action uses the current commit SHA. If it cannot determine a value, the action fails        |
 | `host`                  | No           | PostHog host URL. If you use the US cloud, you don't need to set this. For the EU cloud, set `https://eu.posthog.com`                                |
 | `delete-after-upload`   | No           | Whether to delete the source map files after uploading them (default: `false`)                                                                       |
 | `skip-ssl-verification` | No           | Whether to skip SSL verification when uploading chunks - only use when using self-signed certificates for self-deployed instances (default: `false`) |
 | `batch-size`            | No           | The maximum number of chunks to upload in a single batch (default: 50)                                                                               |
 | `ignore`                | No           | One or more directory glob patterns to ignore (comma-separated, e.g., `node_modules,*.test.js`)                                                      |
-| `cli-version`           | No           | PostHog CLI version to use (e.g., `0.5.7`). If not provided, the latest version is used                                                              |
+| `cli-version`           | No           | PostHog CLI version to use (e.g., `0.5.29`). If not provided, the latest version is used                                                             |
 
 ## Example usage
 
@@ -49,20 +49,20 @@ jobs:
 
       # Inject and upload source maps using this action
       - name: Inject & upload source maps to PostHog
-        uses: PostHog/upload-source-maps@v1
+        uses: PostHog/upload-source-maps@v2
         with:
           directory: dist
-          env-id: ${{ secrets.POSTHOG_ENV_ID }}
-          cli-token: ${{ secrets.POSTHOG_CLI_TOKEN }}
+          project-id: ${{ secrets.POSTHOG_PROJECT_ID }}
+          api-key: ${{ secrets.POSTHOG_CLI_API_KEY }}
 
           # If using the EU cloud, set the host explicitly
           # host: https://eu.posthog.com
 
-          # If a Git repository is not accessible, set the project explicitly
-          # project: my-awesome-project
+          # If a Git repository is not accessible, set the release name explicitly
+          # release-name: my-awesome-project
 
-          # If the current Git commit is not accessible, set the version explicitly
-          # version: 1.2.3
+          # If the current Git commit is not accessible, set the release version explicitly
+          # release-version: 1.2.3
 
           # Delete source map files after uploading
           # delete-after-upload: true
