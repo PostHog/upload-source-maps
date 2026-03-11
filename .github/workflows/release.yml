@@ -31,9 +31,10 @@ jobs:
       - name: Check if tag exists
         id: check_tag
         shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
           set -euo pipefail
-          VERSION="${{ steps.version.outputs.version }}"
           if git rev-parse "$VERSION" >/dev/null 2>&1; then
             echo "exists=true" >> $GITHUB_OUTPUT
           else
@@ -43,9 +44,10 @@ jobs:
       - name: Create tag
         if: steps.check_tag.outputs.exists == 'false'
         shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
           set -euo pipefail
-          VERSION="${{ steps.version.outputs.version }}"
           git tag "$VERSION"
           git push origin "refs/tags/$VERSION"
 
