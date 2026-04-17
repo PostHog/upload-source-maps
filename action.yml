@@ -24,6 +24,9 @@ inputs:
   release-version:
     description: "Release version (e.g., commit SHA). If not provided, the action uses the current commit SHA. If it cannot determine a value, the action fails"
     required: false
+  build:
+    description: "Build number (e.g., 42, CFBundleVersion on iOS, versionCode on Android). Stored as release metadata."
+    required: false
   host:
     description: "PostHog host URL. If you use the US cloud, you don't need to set this. For the EU cloud, set `https://eu.posthog.com`"
     required: false
@@ -70,6 +73,9 @@ runs:
         fi
         if [ -n "${{ inputs.release-version }}" ]; then
           args+=(--release-version "${{ inputs.release-version }}")
+        fi
+        if [ -n "${{ inputs.build }}" ]; then
+          args+=(--build "${{ inputs.build }}")
         fi
         if [ "${{ inputs.delete-after-upload }}" = "true" ]; then
           args+=(--delete-after)
