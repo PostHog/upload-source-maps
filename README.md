@@ -9,6 +9,10 @@ Inject and upload JavaScript source maps to PostHog using the PostHog CLI.
 
 See the PostHog documentation for end-to-end guidance: [Upload source maps](https://posthog.com/docs/error-tracking/upload-source-maps).
 
+## Requirements
+
+This action installs `@posthog/cli` at the version specified by the `cli-version` input (defaults to `latest`). Individual inputs may require a minimum CLI version — see the [CLI CHANGELOG](https://github.com/PostHog/posthog/blob/master/cli/CHANGELOG.md) for feature history. If you pin `cli-version`, make sure it's recent enough to support the inputs you use.
+
 ## Inputs
 
 | **Name**                | **Required** | **Description**                                                                                                                                      |
@@ -18,6 +22,7 @@ See the PostHog documentation for end-to-end guidance: [Upload source maps](http
 | `api-key`               | Yes          | PostHog personal API key with error tracking write scope. See [API key settings](https://app.posthog.com/settings/user-api-keys#variables)           |
 | `release-name`          | No           | Release name. If not provided, the action tries to read the Git repository name. If it cannot determine a value, the action fails                    |
 | `release-version`       | No           | Release version (e.g., commit SHA). If not provided, the action uses the current commit SHA. If it cannot determine a value, the action fails        |
+| `build`                 | No           | Build number (e.g., `42`, `CFBundleVersion` on iOS, `versionCode` on Android). Stored as release metadata.                                           |
 | `host`                  | No           | PostHog host URL. If you use the US cloud, you don't need to set this. For the EU cloud, set `https://eu.posthog.com`                                |
 | `delete-after-upload`   | No           | Whether to delete the source map files after uploading them (default: `false`)                                                                       |
 | `skip-ssl-verification` | No           | Whether to skip SSL verification when uploading chunks - only use when using self-signed certificates for self-deployed instances (default: `false`) |
@@ -63,6 +68,9 @@ jobs:
 
           # If the current Git commit is not accessible, set the release version explicitly
           # release-version: 1.2.3
+
+          # Attach a build number as release metadata
+          # build: 42
 
           # Delete source map files after uploading
           # delete-after-upload: true
