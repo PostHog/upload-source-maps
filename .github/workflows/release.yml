@@ -27,6 +27,7 @@ jobs:
           set -euo pipefail
           VERSION=$(cat VERSION | tr -d '[:space:]')
           echo "version=v${VERSION}" >> $GITHUB_OUTPUT
+          echo "major=v${VERSION%%.*}" >> $GITHUB_OUTPUT
 
       - name: Check if tag exists
         id: check_tag
@@ -50,6 +51,19 @@ jobs:
           set -euo pipefail
           git tag "$VERSION"
           git push origin "refs/tags/$VERSION"
+
+      - name: Move major version tag
+        if: steps.check_tag.outputs.exists == 'false'
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          MAJOR: ${{ steps.version.outputs.major }}
+        run: |
+          set -euo pipefail
+          # Keep the floating major tag (e.g. v2) pointing at the latest
+          # release of that major, following the actions/checkout@v4 convention.
+          git tag -f "$MAJOR" "$VERSION"
+          git push --force origin "refs/tags/$MAJOR"
 
       - name: Create GitHub Release
         if: steps.check_tag.outputs.exists == 'false'
