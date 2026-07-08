@@ -39,7 +39,7 @@ inputs:
     required: false
     default: "false"
   batch-size:
-    description: "The maximum number of chunks to upload in a single batch (default: 50)"
+    description: "The maximum number of chunks to upload in a single batch (default: 50). Lower this (e.g., 10) if uploads are slow or you see `503 Slow Down` errors from object storage."
     required: false
   ignore:
     description: "One or more directory glob patterns to ignore (comma-separated)"
