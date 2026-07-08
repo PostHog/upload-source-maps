@@ -26,7 +26,7 @@ This action installs `@posthog/cli` at the version specified by the `cli-version
 | `host`                  | No           | PostHog host URL. If you use the US cloud, you don't need to set this. For the EU cloud, set `https://eu.posthog.com`                                |
 | `delete-after-upload`   | No           | Whether to delete the source map files after uploading them (default: `false`)                                                                       |
 | `skip-ssl-verification` | No           | Whether to skip SSL verification when uploading chunks - only use when using self-signed certificates for self-deployed instances (default: `false`) |
-| `batch-size`            | No           | The maximum number of chunks to upload in a single batch (default: 50)                                                                               |
+| `batch-size`            | No           | The maximum number of chunks to upload in a single batch (default: 50). Lower this (e.g., `10`) if uploads are slow or you hit `503 Slow Down` throttling — see [Troubleshooting](#troubleshooting) |
 | `ignore`                | No           | One or more directory glob patterns to ignore (comma-separated, e.g., `node_modules,*.test.js`)                                                      |
 | `cli-version`           | No           | PostHog CLI version to use (e.g., `0.5.29`). If not provided, the latest version is used                                                             |
 
@@ -78,8 +78,9 @@ jobs:
           # Skip SSL verification (only for self-signed certificates)
           # skip-ssl-verification: true
 
-          # Custom batch size for uploads
-          # batch-size: 100
+          # Custom batch size for uploads. Lower it (e.g., 10) if uploads are
+          # slow or you see "503 Slow Down" throttling — see Troubleshooting below
+          # batch-size: 50
 
           # Ignore specific patterns
           # ignore: node_modules,*.test.js,coverage
@@ -87,3 +88,23 @@ jobs:
           # Pin to a specific CLI version
           # cli-version: 0.5.7
 ```
+
+## Troubleshooting
+
+### Slow uploads or `503 Slow Down` errors
+
+If your uploads are slow or fail with `503 Slow Down` (S3-style object-storage rate limiting), it usually means too many chunks are being uploaded concurrently. This is more common for high-volume projects (e.g. large Next.js apps) that generate many source map chunks.
+
+Lower the `batch-size` input to reduce the number of chunks uploaded at once. The default is `50`; try `10` (or lower) if you're being throttled:
+
+```yaml
+      - name: Inject & upload source maps to PostHog
+        uses: PostHog/upload-source-maps@v2
+        with:
+          directory: dist
+          project-id: ${{ secrets.POSTHOG_PROJECT_ID }}
+          api-key: ${{ secrets.POSTHOG_CLI_API_KEY }}
+          batch-size: 10
+```
+
+A smaller batch size trades some upload speed for reliability. If you still see throttling at low batch sizes, please [open an issue](https://github.com/PostHog/upload-source-maps/issues).
