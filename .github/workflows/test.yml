@@ -1,0 +1,53 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  install-cli:
+    name: Install CLI on npm ${{ matrix.npm }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # npm 12 disables install scripts by default; npm 10 does not.
+        # The action must install the CLI binary on both.
+        npm: ["10", "12"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+
+      - name: Select npm version
+        shell: bash
+        run: npm i -g npm@${{ matrix.npm }}
+
+      # Mirrors the install step in action.yml. This is the regression guard for
+      # the npm 12 breakage: the binary must be present after the install.
+      - name: Install posthog CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          extra=()
+          if npm i -g --help 2>/dev/null | grep -q -- '--allow-scripts'; then
+            extra+=(--allow-scripts=@posthog/cli)
+          fi
+          npm i -g "${extra[@]}" @posthog/cli@latest
+          bin_dir="$(npm prefix -g)/bin"
+          echo "$bin_dir" >> "$GITHUB_PATH"
+          export PATH="$bin_dir:$PATH"
+          command -v posthog-cli
+
+      - name: Run posthog CLI
+        shell: bash
+        run: posthog-cli --help
