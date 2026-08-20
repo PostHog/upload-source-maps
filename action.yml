@@ -54,7 +54,25 @@ runs:
   steps:
     - name: Install posthog CLI
       shell: bash
-      run: npm i -g @posthog/cli@${{ inputs.cli-version }}
+      run: |
+        set -euo pipefail
+        # npm 12 turns dependency install scripts off by default. @posthog/cli
+        # fetches its native binary in a postinstall script, so the install must
+        # opt that script in. --allow-scripts exists only on npm 11.16+/12, so
+        # gate on it to keep older npm working.
+        extra=()
+        if npm i -g --help 2>/dev/null | grep -q -- '--allow-scripts'; then
+          extra+=(--allow-scripts=@posthog/cli)
+        fi
+        npm i -g "${extra[@]}" "@posthog/cli@${{ inputs.cli-version }}"
+        # Add npm's global bin directory to PATH. Standalone npm prefixes
+        # (mise, asdf, custom prefix) do not put it there by default.
+        # $GITHUB_PATH applies to later steps; export it now for the check below.
+        bin_dir="$(npm prefix -g)/bin"
+        echo "$bin_dir" >> "$GITHUB_PATH"
+        export PATH="$bin_dir:$PATH"
+        # Fail here, not in the upload step, if the binary is still missing.
+        command -v posthog-cli
 
     - name: Upload sourcemaps
       shell: bash
