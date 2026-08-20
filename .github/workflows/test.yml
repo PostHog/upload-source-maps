@@ -6,6 +6,9 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   install-cli:
     name: Install CLI on npm ${{ matrix.npm }}
